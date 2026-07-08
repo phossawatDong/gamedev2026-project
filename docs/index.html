@@ -1,3 +1,369 @@
-<ul>
-  <li><a href="lab01.html">Lab01</a></li>
-</ul>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สมุดบันทึกแลป</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF3F5;
+    --paper-line:rgba(30,42,69,0.07);
+    --ink:#1E2A45;
+    --ink-soft:#5B6B85;
+    --border:#BFCDD5;
+    --red:#C1432E;
+    --red-dark:#8F2F1E;
+    --highlight:rgba(232,201,93,0.30);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    padding-left:44px;
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+    background-size:28px 28px;
+    font-family:'IBM Plex Sans Thai', sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* สันเกลียวโน้ตบุ๊กด้านซ้าย */
+  .spine{
+    position:fixed;
+    top:0; left:0; bottom:0;
+    width:44px;
+    background-color:rgba(30,42,69,0.045);
+    background-image:radial-gradient(circle at center, var(--ink-soft) 34%, transparent 36%);
+    background-size:44px 40px;
+    background-repeat:repeat-y;
+    background-position:center top;
+    box-shadow:inset -6px 0 10px -8px rgba(30,42,69,0.35);
+  }
+
+  main.sheet{
+    max-width:760px;
+    margin:0 auto;
+    padding:clamp(40px,7vw,72px) clamp(20px,5vw,40px) 56px;
+  }
+
+  header.cover{
+    position:relative;
+    padding-bottom:30px;
+    margin-bottom:12px;
+    border-bottom:2px solid var(--ink);
+  }
+
+  .eyebrow{
+    margin:0 0 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--red-dark);
+  }
+
+  h1.title{
+    margin:0 0 10px;
+    font-family:'Chakra Petch', sans-serif;
+    font-weight:700;
+    font-size:clamp(2.1rem, 4.4vw + 1rem, 3.2rem);
+    line-height:1.05;
+    letter-spacing:0.01em;
+    max-width:520px;
+  }
+
+  p.sub{
+    margin:0;
+    max-width:480px;
+    color:var(--ink-soft);
+    font-size:0.98rem;
+    line-height:1.6;
+  }
+
+  .stamp-badge{
+    position:absolute;
+    top:-6px;
+    right:0;
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    border:3px double var(--red);
+    color:var(--red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:0.72rem;
+    letter-spacing:0.05em;
+    line-height:1.35;
+    transform:rotate(-10deg);
+    opacity:0.82;
+  }
+
+  .stamp-badge span{display:block;}
+  .stamp-badge .n{font-family:'Chakra Petch', sans-serif; font-size:1.7rem; font-weight:700; line-height:1;}
+
+  ul.lab-list{
+    list-style:none;
+    margin:8px 0 0;
+    padding:0;
+  }
+
+  .lab-row{
+    border-bottom:1px dashed var(--border);
+  }
+  .lab-row:first-child{border-top:1px dashed var(--border);}
+
+  .lab-row a{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 6px;
+    text-decoration:none;
+    color:inherit;
+    border-radius:6px;
+    transition:background-color 0.2s ease;
+  }
+
+  .lab-row a:hover,
+  .lab-row a:focus-visible{
+    background-color:var(--highlight);
+  }
+
+  .lab-row a:focus-visible{
+    outline:2px solid var(--red);
+    outline-offset:3px;
+  }
+
+  .stamp-num{
+    flex:none;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:2px solid var(--red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Chakra Petch', sans-serif;
+    font-weight:700;
+    font-size:0.95rem;
+    color:var(--red);
+    transition:transform 0.25s ease;
+  }
+  .lab-row a:hover .stamp-num{transform:rotate(0deg) scale(1.04);}
+
+  .lab-row:nth-child(3n) .stamp-num{transform:rotate(-6deg);}
+  .lab-row:nth-child(3n+1) .stamp-num{transform:rotate(3deg);}
+  .lab-row:nth-child(3n+2) .stamp-num{transform:rotate(-2deg);}
+
+  .lab-name{
+    flex:none;
+    font-family:'Chakra Petch', sans-serif;
+    font-weight:500;
+    font-size:1.08rem;
+    min-width:88px;
+  }
+
+  .leader{
+    flex:1 1 auto;
+    align-self:flex-end;
+    height:0;
+    margin:0 6px 8px;
+    border-bottom:2px dotted var(--border);
+    min-width:20px;
+  }
+
+  .open{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.82rem;
+    color:var(--red-dark);
+    white-space:nowrap;
+  }
+
+  .open svg{
+    width:14px; height:14px;
+    transition:transform 0.2s ease;
+  }
+  .lab-row a:hover .open svg{transform:translateX(4px);}
+
+  footer.page-foot{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:40px;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    letter-spacing:0.03em;
+  }
+
+  .page-num{
+    width:26px; height:26px;
+    border:1px solid var(--ink-soft);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft);
+  }
+
+  @media (max-width:640px){
+    body{padding-left:0;}
+    .spine{display:none;}
+    .stamp-badge{
+      position:static;
+      margin:18px 0 0;
+      transform:rotate(-6deg);
+    }
+    .lab-name{min-width:70px; font-size:1rem;}
+    .leader{display:none;}
+    .lab-row a{flex-wrap:wrap; row-gap:6px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="spine" aria-hidden="true"></div>
+
+  <main class="sheet">
+
+    <header class="cover">
+      <p class="eyebrow">Lab Logbook · ภาคปฏิบัติการ</p>
+      <h1 class="title">สมุดบันทึกแลป</h1>
+      <p class="sub">รวบรวมลิงก์ไปยังผลงานแลปทุกชิ้นไว้ในหน้าเดียว เปิดดูได้จากรายการด้านล่าง</p>
+      <div class="stamp-badge" aria-hidden="true">
+        <span class="n">10</span>
+        <span>LABS</span>
+      </div>
+    </header>
+
+    <!-- แก้ไข href ของแต่ละ <a> ด้านล่างให้ชี้ไปยังไฟล์แลปจริงของคุณ -->
+    <ul class="lab-list">
+      <li class="lab-row">
+        <a href="lab01.html">
+          <span class="stamp-num">01</span>
+          <span class="lab-name">Lab 01</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href=".html">
+          <span class="stamp-num">02-1</span>
+          <span class="lab-name">Lab 02-1</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="game22.html">
+          <span class="stamp-num">02-2</span>
+          <span class="lab-name">Lab 02-2</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab04.html">
+          <span class="stamp-num">04</span>
+          <span class="lab-name">Lab 04</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab05.html">
+          <span class="stamp-num">05</span>
+          <span class="lab-name">Lab 05</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab06.html">
+          <span class="stamp-num">06</span>
+          <span class="lab-name">Lab 06</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab07.html">
+          <span class="stamp-num">07</span>
+          <span class="lab-name">Lab 07</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab08.html">
+          <span class="stamp-num">08</span>
+          <span class="lab-name">Lab 08</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab09.html">
+          <span class="stamp-num">09</span>
+          <span class="lab-name">Lab 09</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+      <li class="lab-row">
+        <a href="lab10.html">
+          <span class="stamp-num">10</span>
+          <span class="lab-name">Lab 10</span>
+          <span class="leader"></span>
+          <span class="open">เปิดแลป
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <footer class="page-foot">
+      <span>สมุดบันทึกแลป · หน้ารวมลิงก์</span>
+      <span class="page-num">1</span>
+    </footer>
+
+  </main>
+
+</body>
+</html>
